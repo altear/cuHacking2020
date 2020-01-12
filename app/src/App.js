@@ -1,20 +1,51 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import {ReactComponent as AnnotationsFloor1} from './img/annotations_floor1.svg'
 import {ReactComponent as AnnotationsFloor2} from './img/annotations_floor2.svg'
 import floor1 from './img/floor1.png'
 import floor2 from './img/floor2.png'
+import data from './data/Murder-on-the-2nd-Floor-Raw-Data-v01.json'
+
+var time = 0
 
 function App() {
+  var jason = {
+		fontSize: '200px'
+  }
+  
   return (
     <div className="App">
-			<Floor name="Floor1" image={floor1} annotations={AnnotationsFloor1} /> 
-			<Floor name="Floor2" image={floor2} annotations={AnnotationsFloor2} /> 
+      <p style={jason}>IT'S JASON.</p>
+        <UiPanel />
+        <Floor name="Floor1" image={floor1} annotations={AnnotationsFloor1} /> 
+        <Floor name="Floor2" image={floor2} annotations={AnnotationsFloor2} /> 
 		</div>
   );
 }
 
+class UiPanel extends React.Component {
+  render () {
+    // 
+    let list_data = Object.values(data)
+    let people = list_data.map(log_entry => log_entry['guest-id'])
+    let devices = list_data.map(log_entry => log_entry['device-id'])
+    let all_entities = new Set(people.concat(devices)) 
+    
+    return (
+    <div>
+      <div className="ui input">
+        <input type="text" list="targets" placeholder="Choose target..." />
+      </div>
+      <datalist id="targets">
+        {
+          Array.from(all_entities).map(entity => {
+            return <option value={entity}> {entity} </option>
+          })
+        }
+      </datalist>
+    </div>)
+  }
+}
 class Floor extends React.Component {
   constructor() {
     super()
