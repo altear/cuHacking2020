@@ -31,7 +31,9 @@ class Floor extends React.Component {
 
   updateSvgSize = () => {
     let box = document.querySelector(`#${this.props.name} img`).getBoundingClientRect();
-		this.setState({annotations_style: {position: 'absolute', top: box.top, left: box.left, height: box.height, width: box.width}})
+		this.setState({annotations_style: {
+      position: 'absolute', top: window.scrollY + box.top, left: window.scrollX + box.left, height: box.height, width: box.width
+    }})
   }
 
   componentDidMount() {
