@@ -4,18 +4,39 @@ import {ReactComponent as AnnotationsFloor1} from './img/annotations_floor1.svg'
 import {ReactComponent as AnnotationsFloor2} from './img/annotations_floor2.svg'
 import floor1 from './img/floor1.png'
 import floor2 from './img/floor2.png'
+import title from './img/title.PNG'
 import data from './data/Murder-on-the-2nd-Floor-Raw-Data-v01.json'
-
-var time = 0
+		let list_data = Object.values(data)
+		let people = list_data.map(log_entry => log_entry['guest-id'])
+		let devices = list_data.map(log_entry => log_entry['device-id'])
+		let realDevices = list_data.map(log_entry => log_entry['device'])
+		let events = list_data.map(log_entry => log_entry['event'])
+		let timestamps = Object.keys(data)
+		let all_entities = new Set(people.concat(devices))
+  var stepStyle = {
+	  border: '1px solid black',
+	  padding: '1em',
+	  width: '50%',
+	  minWidth: '500px',
+	  margin: 'auto',
+	  marginBottom: '15vh'
+  }
 
 function App() {
   var jason = {
+		marginTop: '10vh',
 		fontSize: '200px'
+  }
+  
+  var titleStyle = {
+	  marginTop: '5vh'
   }
   
   return (
     <div className="App">
-      <p style={jason}>IT'S JASON.</p>
+		<img src={title} style={titleStyle}/>
+		<p style={jason}>IT'S JASON.</p>
+		<StepThroughEvents />
         <UiPanel />
         <Floor name="Floor1" image={floor1} annotations={AnnotationsFloor1} /> 
         <Floor name="Floor2" image={floor2} annotations={AnnotationsFloor2} /> 
@@ -97,5 +118,98 @@ class Floor extends React.Component {
     )
   }
 }
+
+class StepThroughEvents extends React.Component {
+	state = {
+		index: 0
+	};
+
+	handleClickf = () => {
+		let i = this.state.index;
+		if (i < 439){
+			i++;
+			this.setState({ index: i });
+		}
+	};
+
+	handleClickb = () => {
+		let i = this.state.index;
+		if (i > 0){
+			i--;
+			this.setState({ index: i });
+		}
+	};
+
+	handleClickf10 = () => {
+		let i = this.state.index;
+		if (i < 430){
+			i += 10;
+			this.setState({ index: i });
+		}
+	};
+
+	handleClickb10 = () => {
+		let i = this.state.index;
+		if (i > 10){
+			i -= 10;
+			this.setState({ index: i });
+		}
+	};
+
+	handleClickf100 = () => {
+		let i = this.state.index;
+		if (i < 340){
+			i += 100;
+			this.setState({ index: i });
+		}
+	};
+
+	handleClickb100 = () => {
+		let i = this.state.index;
+		if (i > 100){
+			i -= 100;
+			this.setState({ index: i });
+		}
+	};
+
+	render() {
+		return (
+		
+		<div>
+		  <div className="stepThrough" style={stepStyle}>
+			<h4>View event details</h4>
+			<p>Event #{ this.state.index + 1 }</p>
+			<p>Time: { timeConverter(timestamps[this.state.index]) }</p>
+			<p>Device: { realDevices[this.state.index] }</p>
+			<p>Device-id: { devices[this.state.index] }</p>
+			<p>Event: { events[this.state.index] }</p>
+			<p>Person: { people[this.state.index] }</p>
+		  <button onClick={ this.handleClickb100 }>Back 100</button>
+		  <button onClick={ this.handleClickb10 }>Back 10</button>
+		  <button onClick={ this.handleClickb }>Previous Event</button>
+		  <button onClick={ this.handleClickf }>Next Event</button>
+		  <button onClick={ this.handleClickf10 }>Forward 10</button>
+		  <button onClick={ this.handleClickf100 }>Forward 100</button>
+		  </div>
+		</div>
+		);
+	}
+}
+
+function timeConverter(timething){
+    let a = new Date(timething * 1000);
+    let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    let year = a.getFullYear();
+    let month = months[a.getMonth()];
+    let date = a.getDate();
+    let hour = a.getHours();
+    let min = a.getMinutes();
+    let sec = a.getSeconds();
+	let time = month + ' ' + date + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+	if (sec < 10){
+		time = month + ' ' + date + ' ' + year + ' ' + hour + ':' + min + ':0' + sec ;
+	}
+    return time;
+  }
 
 export default App;
